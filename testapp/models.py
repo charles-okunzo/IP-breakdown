@@ -23,8 +23,8 @@ class Profile(models.Model):
     def __str__(self) -> str:
         return f"{self.user.username} Profile"
 
-class Image(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+class Post(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
     image_path = models.ImageField(upload_to='post_images/', blank=True)
     image_name = models.CharField(max_length=20)
     image_caption = models.TextField()
@@ -36,7 +36,7 @@ class Image(models.Model):
 
 class Comment(models.Model):
     content = models.TextField()
-    image = models.ForeignKey(Image, on_delete=models.CASCADE)
+    image = models.ForeignKey(Post, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
@@ -45,7 +45,7 @@ class Comment(models.Model):
 
 
 class Like(models.Model):
-    image = models.ForeignKey(Image, on_delete=models.CASCADE)
+    image = models.ForeignKey(Post, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
@@ -55,9 +55,15 @@ class Like(models.Model):
 
 #Create followers and follow
 class Follow(models.Model):
-    following = models.ForeignKey(User, on_delete=models.CASCADE)
-    # follower = models.ForeignKey(User, on_delete=models.CASCADE)
+    account_following = models.ForeignKey(User, on_delete=models.CASCADE, related_name='followers', null=True)
+    follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name='follower', null=True)
 
     def __str__(self) -> str:
-        return f"{self.following}"
+        return f"{self.follower}"
+
+
+
+# user = User.objects.first()
+# user.post_set.all()
+#related name => post_set
 
